@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
-import { mockPikachu, mockCharizard, mockTauros } from '@/test/mocks/pokemon-detail.mock';
+import { mockPikachu, mockCharizard, mockTauros, mockPikachuGmax } from '@/test/mocks/pokemon-detail.mock';
 
 // Mock next/image
 jest.mock('next/image', () => ({
@@ -78,6 +78,10 @@ describe('PokemonDetail Component', () => {
     expect(screen.getByTestId('stat-hp')).toHaveTextContent('hp: 35');
     expect(screen.getByTestId('stat-attack')).toHaveTextContent('attack: 55');
     expect(screen.getByTestId('stat-speed')).toHaveTextContent('speed: 90');
+    
+    // Verify back to base form button is not shown for regular Pokemon
+    const backToBaseButtons = screen.queryAllByText('Back to Base Form');
+    expect(backToBaseButtons.length).toBe(0);
   });
   
   it('renders Pokemon details correctly for Charizard', () => {
@@ -162,5 +166,17 @@ describe('PokemonDetail Component', () => {
     
     // Just check if varieties are rendered in general
     expect(varietiesSection.querySelectorAll('a').length).toBeGreaterThan(0);
+  });
+
+  it('displays Back to Base Form button for Pikachu-Gmax variant', () => {
+    logDebug(<PokemonDetail pokemon={mockPikachuGmax} />);
+    
+    // Check Pokemon name displays correctly
+    expect(screen.getByTestId('pokemon-name')).toHaveTextContent('Pikachu-gmax');
+    
+    // Check that the Back to Base Form button is rendered
+    const linkElement = screen.getByRole('link', { name: /Back to Base Form/i });
+    expect(linkElement).toBeInTheDocument();
+    expect(linkElement).toHaveAttribute('href', expect.stringContaining('/pokemon/25'));
   });
 });

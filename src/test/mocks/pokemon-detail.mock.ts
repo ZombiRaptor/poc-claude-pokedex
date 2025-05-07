@@ -226,6 +226,82 @@ export const mockTauros: Pokemon = {
   ]
 };
 
+// Mock data for Pikachu-Gmax form
+export const mockPikachuGmax: Pokemon = {
+  id: 10194,
+  name: 'pikachu-gmax',
+  height: 21, // Gigantamax is huge
+  weight: 950,
+  types: [
+    {
+      type: {
+        name: 'electric'
+      }
+    }
+  ],
+  sprites: {
+    front_default: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10194.png',
+    front_shiny: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/shiny/10194.png',
+    other: {
+      'official-artwork': {
+        front_default: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/10194.png'
+      }
+    }
+  },
+  species: {
+    name: 'pikachu',
+    url: 'https://pokeapi.co/api/v2/pokemon-species/25/'
+  },
+  forms: [],
+  varieties: [],
+  abilities: [
+    {
+      ability: {
+        name: 'static'
+      },
+      is_hidden: false
+    }
+  ],
+  stats: [
+    {
+      base_stat: 35,
+      stat: {
+        name: 'hp'
+      }
+    },
+    {
+      base_stat: 55,
+      stat: {
+        name: 'attack'
+      }
+    },
+    {
+      base_stat: 40,
+      stat: {
+        name: 'defense'
+      }
+    },
+    {
+      base_stat: 50,
+      stat: {
+        name: 'special-attack'
+      }
+    },
+    {
+      base_stat: 50,
+      stat: {
+        name: 'special-defense'
+      }
+    },
+    {
+      base_stat: 90,
+      stat: {
+        name: 'speed'
+      }
+    }
+  ]
+};
+
 // Mock detailed Pokémon data for Charizard (id: 6)
 export const mockCharizard: Pokemon = {
   id: 6,

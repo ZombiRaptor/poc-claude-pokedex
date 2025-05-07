@@ -29,7 +29,7 @@ export function PokemonDetail({ pokemon, isLoading = false, error = null }: Poke
   const backToListUrl = `/?page=${page}&perPage=${perPage}`;
   
   if (isLoading) {
-    return <div data-testid="loading-state">Loading...</div>;
+    return <PokemonDetailSkeleton />;
   }
   
   if (error) {
@@ -119,18 +119,37 @@ export function PokemonDetail({ pokemon, isLoading = false, error = null }: Poke
               />
             </div>
             
-            {pokemon.sprites.other['official-artwork'].front_shiny && (
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={() => setShowShiny(!showShiny)}
-                className={`flex items-center gap-2 ${showShiny ? 'bg-yellow-100' : ''}`}
-                data-testid="shiny-toggle"
-              >
-                <Sparkles className={`h-4 w-4 ${showShiny ? 'text-yellow-500' : 'text-gray-500'}`} />
-                {showShiny ? 'Show Normal' : 'Show Shiny'}
-              </Button>
-            )}
+            <div className="flex flex-wrap gap-2 justify-center">
+              {pokemon.sprites.other['official-artwork'].front_shiny && (
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => setShowShiny(!showShiny)}
+                  className={`flex items-center gap-2 ${showShiny ? 'bg-yellow-100' : ''}`}
+                  data-testid="shiny-toggle"
+                >
+                  <Sparkles className={`h-4 w-4 ${showShiny ? 'text-yellow-500' : 'text-gray-500'}`} />
+                  {showShiny ? 'Show Normal' : 'Show Shiny'}
+                </Button>
+              )}
+              
+              {/* Global back to normal form button - always show for any form with hyphen */}
+              {pokemon.name.includes('-') && (
+                <Link
+                  href={`/pokemon/${pokemon.species ? pokemon.species.url.split('/').filter(Boolean).pop() : pokemon.id.toString().split('-')[0]}?page=${page}&perPage=${perPage}`}
+                  data-testid="back-to-base-form-global"
+                >
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    className="bg-blue-100 flex items-center gap-2"
+                  >
+                    <ArrowLeft className="h-4 w-4" />
+                    Back to Base Form
+                  </Button>
+                </Link>
+              )}
+            </div>
           </div>
           
           <div>
@@ -231,6 +250,23 @@ export function PokemonDetail({ pokemon, isLoading = false, error = null }: Poke
                       </Link>
                     );
                   })}
+                
+                {/* Back to normal form button - show if this is not the default form */}
+                {pokemon.varieties && pokemon.name.includes('-') && (
+                  <Link
+                    href={`/pokemon/${pokemon.species ? pokemon.species.url.split('/').filter(Boolean).pop() : pokemon.id.toString().split('-')[0]}?page=${page}&perPage=${perPage}`}
+                    data-testid="back-to-normal-form"
+                  >
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      className="bg-blue-100"
+                    >
+                      <ArrowLeft className="mr-2 h-4 w-4" />
+                      Back to Normal Form
+                    </Button>
+                  </Link>
+                )}
               </div>
             </div>
           )}
@@ -260,6 +296,23 @@ export function PokemonDetail({ pokemon, isLoading = false, error = null }: Poke
                       </Link>
                     );
                   })}
+                
+                {/* Back to normal form button - always show if the name contains a hyphen */}
+                {pokemon.name.includes('-') && (
+                  <Link
+                    href={`/pokemon/${pokemon.species ? pokemon.species.url.split('/').filter(Boolean).pop() : pokemon.id.toString().split('-')[0]}?page=${page}&perPage=${perPage}`}
+                    data-testid="back-to-base-form"
+                  >
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      className="bg-blue-100"
+                    >
+                      <ArrowLeft className="mr-2 h-4 w-4" />
+                      Back to Base Form
+                    </Button>
+                  </Link>
+                )}
               </div>
             </div>
           )}
@@ -296,8 +349,13 @@ function PokemonDetailSkeleton() {
         </CardHeader>
         
         <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <div className="flex justify-center items-center">
-            <Skeleton className="w-64 h-64 rounded-md" />
+          <div className="flex flex-col justify-center items-center">
+            <div className="relative w-64 h-64 mb-4">
+              <Skeleton className="w-64 h-64 rounded-md" />
+            </div>
+            <div className="flex flex-wrap gap-2 justify-center">
+              <Skeleton className="h-9 w-28 rounded-md" />
+            </div>
           </div>
           
           <div>
@@ -322,17 +380,38 @@ function PokemonDetailSkeleton() {
         </CardContent>
         
         <CardFooter className="flex-col pt-0 pb-6">
-          <div className="w-full">
+          {/* Stats section */}
+          <div className="w-full mb-6">
             <Skeleton className="h-8 w-32 mb-3" />
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {Array.from({ length: 6 }).map((_, index) => (
-                <div key={index} className="mb-2">
+                <div key={`stat-${index}`} className="mb-2">
                   <div className="flex justify-between mb-1">
                     <Skeleton className="h-4 w-24" />
                     <Skeleton className="h-4 w-8" />
                   </div>
                   <Skeleton className="h-2.5 w-full rounded-full" />
                 </div>
+              ))}
+            </div>
+          </div>
+          
+          {/* Varieties section */}
+          <div className="w-full mb-4">
+            <Skeleton className="h-8 w-32 mb-3" />
+            <div className="flex flex-wrap gap-2">
+              {Array.from({ length: 3 }).map((_, index) => (
+                <Skeleton key={`variety-${index}`} className="h-9 w-28 rounded-md" />
+              ))}
+            </div>
+          </div>
+          
+          {/* Forms section */}
+          <div className="w-full">
+            <Skeleton className="h-8 w-32 mb-3" />
+            <div className="flex flex-wrap gap-2">
+              {Array.from({ length: 2 }).map((_, index) => (
+                <Skeleton key={`form-${index}`} className="h-9 w-28 rounded-md" />
               ))}
             </div>
           </div>
